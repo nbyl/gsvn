@@ -1,0 +1,32 @@
+#!/bin/bash
+
+set -e
+#set -x
+
+CURRENT_BRANCH=`git rev-parse --abbrev-ref HEAD`
+
+echo "You are currently working on $CURRENT_BRANCH"
+
+if [ -z $? ]; then
+  echo "You have uncommitted changes!"
+  exit 1
+fi
+
+if [ $CURRENT_BRANCH != "master" ]; then
+  git checkout master
+fi
+
+git svn rebase
+
+if [ $CURRENT_BRANCH != "master" ]; then
+  git merge --no-ff $CURRENT_BRANCH
+  git commit --amend
+fi
+
+git svn dcommit 
+
+if [ $CURRENT_BRANCH != "master" ]; then
+  echo "Switching back to $CURRENT_BRANCH..."
+  git checkout $CURRENT_BRANCH
+  git merge master
+fi
