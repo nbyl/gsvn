@@ -1,11 +1,13 @@
 #!/bin/bash
 
 set -e
+#set -x
 
 CURRENT_BRANCH=`git rev-parse --abbrev-ref HEAD`
 
 echo "You are currently working on $CURRENT_BRANCH"
 
+git diff-files --quiet
 if [ -z $? ]; then
   echo "You have uncommitted changes!"
   exit 1
