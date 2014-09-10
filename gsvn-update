@@ -1,16 +1,16 @@
 #!/bin/bash
 
-set -e
-#set -x
+#set -e
+set -x
 
 CURRENT_BRANCH=`git rev-parse --abbrev-ref HEAD`
 
 echo "You are currently working on $CURRENT_BRANCH"
-
 git diff-files --quiet
-if [ -z $? ]; then
-  echo "You have uncommitted changes!"
-  exit 1
+if [ ! -z $? ]; then
+  echo "Stashing changes..."
+  git stash
+  STASHED_CHANGES=true
 fi
 
 if [ $CURRENT_BRANCH != "master" ]; then
@@ -23,4 +23,9 @@ if [ $CURRENT_BRANCH != "master" ]; then
   echo "Switching back to $CURRENT_BRANCH..."
   git checkout $CURRENT_BRANCH
   git merge master
+fi
+
+if [ $STASHED_CHANGES ]; then
+  echo "Re-applying stashed changes..."
+  git stash pop
 fi
