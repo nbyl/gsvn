@@ -1,12 +1,12 @@
 #!/bin/bash
 
 #set -e
-set -x
+#set -x
 
 CURRENT_BRANCH=`git rev-parse --abbrev-ref HEAD`
 
 echo "You are currently working on $CURRENT_BRANCH"
-git diff-files --quiet
+git diff-index --quiet HEAD
 if [ ! -z $? ]; then
   echo "Stashing changes..."
   git stash
@@ -29,3 +29,4 @@ if [ $STASHED_CHANGES ]; then
   echo "Re-applying stashed changes..."
   git stash pop
 fi
+
