@@ -6,7 +6,8 @@
 CURRENT_BRANCH=`git rev-parse --abbrev-ref HEAD`
 
 echo "You are currently working on $CURRENT_BRANCH"
-DIFF_RESULT=$(git diff-index --quiet HEAD)
+git diff-index --quiet HEAD
+DIFF_RESULT=$?
 if [ ! -z ${DIFF_RESULT} ]; then
   echo "Stashing changes..."
   git stash
