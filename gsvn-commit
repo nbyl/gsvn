@@ -20,7 +20,9 @@ fi
 git svn rebase
 
 if [ $CURRENT_BRANCH != "master" ]; then
-  git merge --no-ff $CURRENT_BRANCH
+  LOGS=$(git log ${CURRENT_BRANCH} ^master --pretty=oneline --abbrev-commit)
+  git merge --no-ff $CURRENT_BRANCH --no-edit
+  git commit --amend -m "${CURRENT_BRANCH} ${LOGS}"
   git commit --amend
 fi
 
@@ -29,11 +31,10 @@ git svn dcommit
 if [ $CURRENT_BRANCH != "master" ]; then
   echo "Switching back to $CURRENT_BRANCH..."
   git checkout $CURRENT_BRANCH
-  git merge master
+  git rebase master
 fi
 
 if [ $STASHED_CHANGES ]; then
   echo "Re-applying stashed changes..."
   git stash pop
 fi
-
